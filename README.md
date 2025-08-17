@@ -2,6 +2,7 @@
 
 ## System Architecture
 
+
 ### User Types & Privileges
 
 #### Customer/User
