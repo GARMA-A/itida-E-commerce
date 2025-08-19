@@ -4,9 +4,10 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import session from "express-session";
 import passport from "./config/passport";
-// import { connectDB } from "./config/database";
+import { connectDB } from "./config/database";
 import rootRouter from "./routes/rootRouter";
 import authRouter from "./routes/authRouter";
+import oauthRouter from "./routes/oauthRouter";
 import protectedRouter from "./routes/protectedRouter";
 
 dotenv.config();
@@ -14,9 +15,8 @@ dotenv.config();
 const PORT = process.env.PORT || 3000;
 const app = express();
 
-// Connect to MongoDB - disabled for demo
-// connectDB();
-console.log('Database connection disabled for demo purposes');
+// Connect to MongoDB (optional for demo)
+connectDB();
 
 // Middleware
 app.use(cors({
@@ -45,8 +45,21 @@ app.use(passport.session());
 // Routes
 app.use("/", rootRouter);
 app.use("/api/auth", authRouter);
+
+// Only add OAuth routes if OAuth is configured
+if (process.env.GOOGLE_CLIENT_ID || process.env.GITHUB_CLIENT_ID) {
+  app.use("/api/auth", oauthRouter);
+}
+
 app.use("/api", protectedRouter);
 
 app.listen(PORT, () => {
 	console.log(`Server is running on http://localhost:${PORT}`);
+	console.log(`Authentication endpoints available at http://localhost:${PORT}/api/auth`);
+	if (process.env.GOOGLE_CLIENT_ID) {
+		console.log(`Google OAuth: http://localhost:${PORT}/api/auth/google`);
+	}
+	if (process.env.GITHUB_CLIENT_ID) {
+		console.log(`GitHub OAuth: http://localhost:${PORT}/api/auth/github`);
+	}
 });
