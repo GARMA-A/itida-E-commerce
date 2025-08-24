@@ -1,9 +1,21 @@
-import express from 'express';
-import RootController from '../controllers/rootController.ts';
+import { Router } from "express";
+import {
+  registerUser,
+  getUser,
+  updateUser,
+  deleteUser,
+  listUsers,
+} from "../controllers/userController";
 
-const router = express.Router();
+const router: Router = Router();
 
-router.get('/', RootController);
+// CRUD
+router.post("/register", registerUser);
+router.get("/profile/:id", getUser);
+router.put("/profile/:id", updateUser);
+router.delete("/:id", deleteUser);
+
+// List (Admin)
+router.get("/", listUsers);
 
 export default router;
-
