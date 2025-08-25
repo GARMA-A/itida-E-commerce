@@ -1,5 +1,5 @@
-import { Router } from "express";
-
+import express, { Router } from "express";
+import RootController from "../controllers/rootController";
 import {
   createUser,
   getUser,
@@ -8,7 +8,10 @@ import {
   listUsers,
 } from "../controllers/userController";
 
-const router: Router = Router();
+const router: Router = express.Router();
+
+// Root route
+router.get("/", RootController);
 
 // CRUD
 router.post("/register", createUser);
@@ -17,6 +20,6 @@ router.put("/profile/:id", updateUser);
 router.delete("/:id", deleteUser);
 
 // List (Admin)
-router.get("/", listUsers);
+router.get("/list", listUsers);
 
 export default router;
