@@ -1,4 +1,5 @@
-import express, { Router } from "express";
+import { Router } from "express";
+import express from "express";
 import RootController from "../controllers/rootController";
 import {
   createUser,
@@ -8,7 +9,7 @@ import {
   listUsers,
 } from "../controllers/userController";
 
-const router: Router = express.Router();
+const router = express.Router();
 
 // Root route
 router.get("/", RootController);
