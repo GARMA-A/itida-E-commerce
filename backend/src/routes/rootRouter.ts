@@ -1,6 +1,7 @@
 import { Router } from "express";
+
 import {
-  registerUser,
+  createUser,
   getUser,
   updateUser,
   deleteUser,
@@ -10,7 +11,7 @@ import {
 const router: Router = Router();
 
 // CRUD
-router.post("/register", registerUser);
+router.post("/register", createUser);
 router.get("/profile/:id", getUser);
 router.put("/profile/:id", updateUser);
 router.delete("/:id", deleteUser);
