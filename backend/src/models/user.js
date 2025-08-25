@@ -24,7 +24,7 @@ const UserSchema = new mongoose.Schema({
     profilImage: {type: String, required: false},
     isActive: {type: Boolean, default: true},
     emailVerified: {type: Boolean, default: false},
-    //address:{AdressSchema},
+    address:{AdressSchema},
     createdAt: {type: Date, default: Date.now},
     updatedAt: {type: Date, default: Date.now},
 });
