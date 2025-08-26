@@ -1,0 +1,52 @@
+# ========================================
+# Node.js / NPM / Yarn
+# ========================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+.pnpm-debug.log
+
+# ========================================
+# Angular / Frontend (inside frontend/)
+# ========================================
+dist/
+.angular/
+.angular/cache/
+.angular/cache/**
+.angular/**
+.vscode/
+.idea/
+
+# Angular environment files (keep local only, don't share)
+src/environments/environment*.ts
+
+# ========================================
+# Logs
+# ========================================
+*.log
+*.log.*
+logs/
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# ========================================
+# OS / IDE / Editors
+# ========================================
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ========================================
+# Optional - Coverage / Testing
+# ========================================
+coverage/
+.nyc_output/
