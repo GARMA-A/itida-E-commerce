@@ -1,1 +1,134 @@
-<p>contact-form works!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Form</title>
+</head>
+<body>
+  <section class="contact">
+    <div class="loginCaontainer">
+      <div class="loginFrame">
+        <h2 class="form-title">Contact Us</h2>
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+          <div class="twoInptFild">
+            <div class="input-wrapper">
+              <label class="input-label" for="name">Full Name</label>
+              <input 
+                type="text" 
+                id="name" 
+                formControlName="name" 
+                class="inpt" 
+                placeholder="Enter your full name"
+                [class.error]="name?.invalid && name?.touched"
+              >
+              <div class="error-message" *ngIf="name?.invalid && name?.touched">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ getFieldError('name') }}
+              </div>
+            </div>
+
+            <div class="input-wrapper">
+              <label class="input-label" for="email">Email</label>
+              <input 
+                type="email" 
+                id="email" 
+                formControlName="email" 
+                class="inpt" 
+                placeholder="Enter your email"
+                [class.error]="email?.invalid && email?.touched"
+              >
+              <div class="error-message" *ngIf="email?.invalid && email?.touched">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ getFieldError('email') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="twoInptFild">
+            <div class="input-wrapper">
+              <label class="input-label" for="phone">Phone Number</label>
+              <input 
+                type="tel" 
+                id="phone" 
+                formControlName="phone" 
+                class="inpt" 
+                placeholder="Enter your phone number"
+                [class.error]="phone?.invalid && phone?.touched"
+              >
+              <div class="error-message" *ngIf="phone?.invalid && phone?.touched">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ getFieldError('phone') }}
+              </div>
+            </div>
+
+            <div class="input-wrapper">
+              <label class="input-label" for="title">Subject</label>
+              <input 
+                type="text" 
+                id="title" 
+                formControlName="title" 
+                class="inpt" 
+                placeholder="Enter the subject"
+                [class.error]="title?.invalid && title?.touched"
+              >
+              <div class="error-message" *ngIf="title?.invalid && title?.touched">
+                <i class="fas fa-exclamation-circle"></i>
+                {{ getFieldError('title') }}
+              </div>
+            </div>
+          </div>
+
+          <div class="input-wrapper">
+            <label class="input-label" for="message">Message</label>
+            <textarea 
+              id="message" 
+              formControlName="message" 
+              class="inpt" 
+              placeholder="Enter your message"
+              [class.error]="message?.invalid && message?.touched"
+            ></textarea>
+            <div class="error-message" *ngIf="message?.invalid && message?.touched">
+              <i class="fas fa-exclamation-circle"></i>
+              {{ getFieldError('message') }}
+            </div>
+          </div>
+
+          <div class="submitBtn">
+            <button type="submit" [disabled]="isSubmitting">
+              <span *ngIf="isSubmitting" class="submit-loading"></span>
+              {{ isSubmitting ? 'Sending...' : 'Send Message' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <div class="modal-overlay" [class.active]="showSuccessMessage">
+    <div class="CorrectContainer">
+      <span class="xicon" (click)="closeSuccessMessage()">
+        <i class="fas fa-times"></i>
+      </span>
+      <div class="modal-icon">😄</div>
+      <div class="CorrectMsg">
+        <h1>Message Sent Successfully</h1>
+        <p>Thank you for contacting us, we'll respond as soon as possible.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" [class.active]="showErrorMessage">
+    <div class="errorMsgContainer">
+      <span class="xicon" (click)="closeErrorMessage()">
+        <i class="fas fa-times"></i>
+      </span>
+      <div class="modal-icon">😥</div>
+      <div class="errorMsg">
+        <h1>Failed to Send!</h1>
+        <p>An error occurred while trying to send. Please try again.</p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
