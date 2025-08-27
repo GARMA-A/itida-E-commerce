@@ -1,0 +1,85 @@
+.product {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  margin-bottom: 0.5rem;
+  align-items: center;
+}
+
+.product h2 {
+  color: #ffffff;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.product h2:first-child {
+  text-align: left;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.product-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+}
+
+.product-image {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 0.3rem;
+}
+
+.quantity-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.quantity-controls button {
+  background: #db4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.3rem;
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.quantity-controls button:hover {
+  background: #c73e3e;
+}
+
+.quantity-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.quantity-controls span {
+  min-width: 2rem;
+  text-align: center;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.remove-item {
+  background: #db4444;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.3rem;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.remove-item:hover {
+  background: #c73e3e;
+}
