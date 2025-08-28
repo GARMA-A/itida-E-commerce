@@ -1,1 +1,33 @@
-<p>user-management works!</p>
+<div class="loginCaontainer">
+  <div class="loginFrame">
+    <h1>Welcome! 😄</h1>
+
+    <div class="submitBtn" *ngIf="!(authState$ | async)?.isAuthenticated">
+      <button (click)="goToLogin()">Log In</button>
+    </div>
+
+    <div class="submitBtn" *ngIf="(authState$ | async)?.isAuthenticated">
+      <button class="out" (click)="logout()">Log Out</button>
+    </div>
+
+    <div class="submitBtn" *ngIf="!(authState$ | async)?.isAuthenticated">
+      <button (click)="goToSignup()">Sign Up</button>
+    </div>
+
+    <div class="submitBtn" *ngIf="(authState$ | async)?.isAuthenticated">
+      <button class="delete" (click)="confirmDeleteAccount()">Delete Your Account</button>
+    </div>
+  </div>
+
+  <div class="errorMsgContainer" [class.show]="showDeleteConfirmation">
+    <i class="fa-solid fa-x xicon xicon1" (click)="cancelDelete()"></i>
+    <div class="errorMsg">
+      <h1>Are you sure you want to delete your account?</h1>
+      <h1>This action cannot be undone.</h1>
+      <div class="confirmation-buttons">
+        <button class="confirm-delete" (click)="deleteAccount()">Yes, Delete</button>
+        <button class="cancel-delete" (click)="cancelDelete()">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>

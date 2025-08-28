@@ -1,1 +1,63 @@
-<p>signup works!</p>
+<div class="loginCaontainer">
+  <div class="loginFrame">
+    <h1>Create Account</h1>
+
+    <form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+      <input
+        type="text"
+        placeholder="First Name"
+        class="inpt firstName"
+        formControlName="firstName"
+        [class.error]="signupForm.get('firstName')?.invalid && signupForm.get('firstName')?.touched"
+      />
+
+      <input
+        type="text"
+        placeholder="Last Name"
+        class="inpt secondName"
+        formControlName="lastName"
+        [class.error]="signupForm.get('lastName')?.invalid && signupForm.get('lastName')?.touched"
+      />
+
+      <input
+        type="password"
+        placeholder="Password (numbers only)"
+        class="inpt password"
+        formControlName="password"
+        [class.error]="signupForm.get('password')?.invalid && signupForm.get('password')?.touched"
+      />
+
+      <input
+        type="password"
+        placeholder="Confirm Password"
+        class="inpt confirmPassword"
+        formControlName="confirmPassword"
+        [class.error]="
+          signupForm.get('confirmPassword')?.invalid && signupForm.get('confirmPassword')?.touched
+        "
+      />
+
+      <div class="submitBtn">
+        <button type="submit" [disabled]="isSubmitting" class="signup">
+          {{ isSubmitting ? 'Creating Account...' : 'Create Account' }}
+        </button>
+      </div>
+    </form>
+
+    <p class="auth-link">Already have an account? <a routerLink="/auth/login">Log in</a></p>
+  </div>
+
+  <div class="errorMsgContainer" [class.show]="showError">
+    <i class="fa-solid fa-x xicon xicon1" (click)="closeError()"></i>
+    <div class="errorMsg">
+      <h1 *ngFor="let message of errorMessages">{{ message }}</h1>
+    </div>
+  </div>
+
+  <div class="CorrectContainer" [class.show]="showSuccess">
+    <i class="fa-solid fa-x xicon xicon2" (click)="closeSuccess()"></i>
+    <div class="CorrectMsg">
+      <h1>Account Created Successfully!</h1>
+    </div>
+  </div>
+</div>

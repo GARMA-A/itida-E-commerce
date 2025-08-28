@@ -1,1 +1,38 @@
-<p>login works!</p>
+<div class="loginCaontainer">
+  <div class="loginFrame">
+    <h1>Login</h1>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <input
+        type="text"
+        placeholder="First Name"
+        class="inpt userName"
+        formControlName="firstName"
+        [class.error]="loginForm.get('firstName')?.invalid && loginForm.get('firstName')?.touched"
+      />
+
+      <input
+        type="password"
+        placeholder="Password"
+        class="inpt password"
+        formControlName="password"
+        [class.error]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+      />
+
+      <div class="submitBtn">
+        <button type="submit" [disabled]="isSubmitting">
+          {{ isSubmitting ? 'Logging in...' : 'Log In' }}
+        </button>
+      </div>
+    </form>
+
+    <p class="auth-link">Don't have an account? <a routerLink="/auth/signup">Sign up</a></p>
+  </div>
+
+  <div class="errorMsgContainer" [class.show]="showError">
+    <i class="fa-solid fa-x xicon xicon1" (click)="closeError()"></i>
+    <div class="errorMsg">
+      <h1>{{ errorMessage }}</h1>
+    </div>
+  </div>
+</div>

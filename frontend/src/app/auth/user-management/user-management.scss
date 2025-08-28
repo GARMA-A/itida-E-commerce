@@ -1,0 +1,202 @@
+// Authentication Form Colors
+$auth-container-bg: rgba(20, 25, 42, 0.95); // Form container background
+$auth-form-bg: rgba(255, 255, 255, 0.1); // Form background
+$auth-input-bg: #f2f6ff; // Input field backgrounds
+$auth-input-text: #000000; // Input text color
+$auth-input-placeholder: rgba(0, 0, 0, 0.6); // Placeholder text
+$auth-input-border: transparent; // Input borders
+$auth-input-focus: #db4444; // Input focus border
+
+// Button Colors
+$login-btn-bg: #db4444; // Login button background
+$login-btn-text: #ffffff; // Login button text
+$login-btn-hover: #c73e3e; // Login button hover
+
+$signup-btn-bg: #00953c; // Signup button background
+$signup-btn-text: #ffffff; // Signup button text
+$signup-btn-hover: #007a32; // Signup button hover
+
+$logout-btn-bg: #326994; // Logout button background
+$logout-btn-text: #ffffff; // Logout button text
+$logout-btn-hover: #2a5a82; // Logout button hover
+
+$delete-btn-bg: #db4444; // Delete account button
+$delete-btn-text: #ffffff; // Delete button text
+$delete-btn-hover: #c73e3e; // Delete button hover
+
+// Message Colors
+$welcome-text: #ffffff; // Welcome message
+$error-bg: rgba(219, 68, 68, 0.9); // Error message background
+$error-text: #ffffff; // Error message text
+$success-bg: rgba(0, 149, 60, 0.9); // Success message background
+$success-text: #ffffff; // Success message text
+
+// Form Title
+$form-title: #ffffff; // Form titles
+$brand-color: #db4444; // Brand color in nav
+
+.loginCaontainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: $auth-container-bg;
+
+  .loginFrame {
+    background: $auth-form-bg;
+    border-radius: 1rem;
+    padding: 3rem;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    h1 {
+      color: $form-title;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .submitBtn {
+      margin-bottom: 1rem;
+
+      button {
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        // Default button styling
+        background: $login-btn-bg;
+        color: $login-btn-text;
+
+        &:hover {
+          background: $login-btn-hover;
+        }
+
+        // Logout button variant
+        &.out {
+          background: $logout-btn-bg;
+
+          &:hover {
+            background: $logout-btn-hover;
+          }
+        }
+
+        // Delete button variant
+        &.delete {
+          background: $delete-btn-bg;
+
+          &:hover {
+            background: $delete-btn-hover;
+          }
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}
+
+.errorMsgContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  background: $error-bg;
+
+  &.show {
+    display: flex;
+  }
+
+  .xicon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: $error-text;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1001;
+  }
+
+  .errorMsg {
+    text-align: center;
+    padding: 2rem;
+
+    h1 {
+      color: $error-text;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .confirmation-buttons {
+      margin-top: 1.5rem;
+
+      button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        margin: 0 0.5rem;
+
+        &.confirm-delete {
+          background: $delete-btn-bg;
+          color: $delete-btn-text;
+
+          &:hover {
+            background: $delete-btn-hover;
+          }
+        }
+
+        &.cancel-delete {
+          background: $logout-btn-bg;
+          color: $logout-btn-text;
+
+          &:hover {
+            background: $logout-btn-hover;
+          }
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .loginCaontainer {
+    .loginFrame {
+      padding: 2rem;
+
+      h1 {
+        font-size: 1.75rem;
+      }
+    }
+  }
+
+  .errorMsgContainer {
+    .errorMsg {
+      padding: 1.5rem;
+
+      h1 {
+        font-size: 1.1rem;
+      }
+    }
+  }
+}

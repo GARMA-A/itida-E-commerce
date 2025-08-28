@@ -9,6 +9,7 @@ import { Signup } from './auth/signup/signup';
 import { UserManagement } from './auth/user-management/user-management';
 import { Success } from './pages/success/success';
 import { ErrorPage } from './pages/error-page/error-page';
+import { authGuard } from './core/guards/auth-guard';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -16,6 +17,7 @@ export const routes: Routes = [
   { path: 'contact', component: Contact },
   { path: 'products', component: Products },
   { path: 'cart', component: CartComponent },
+  { path: 'auth', component: UserManagement },
   { path: 'auth/login', component: Login },
   { path: 'auth/signup', component: Signup },
   { path: 'auth/manage', component: UserManagement },

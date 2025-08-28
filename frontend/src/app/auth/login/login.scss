@@ -1,0 +1,187 @@
+$auth-container-bg: rgba(20, 25, 42, 0.95);
+$auth-form-bg: rgba(255, 255, 255, 0.1);
+$auth-input-bg: #f2f6ff;
+$auth-input-text: #000000;
+$auth-input-placeholder: rgba(0, 0, 0, 0.6);
+$auth-input-border: transparent;
+$auth-input-focus: #db4444;
+
+$login-btn-bg: #db4444;
+$login-btn-text: #ffffff;
+$login-btn-hover: #c73e3e;
+
+$signup-btn-bg: #00953c;
+$signup-btn-text: #ffffff;
+$signup-btn-hover: #007a32;
+
+$logout-btn-bg: #326994;
+$logout-btn-text: #ffffff;
+$logout-btn-hover: #2a5a82;
+
+$delete-btn-bg: #db4444;
+$delete-btn-text: #ffffff;
+$delete-btn-hover: #c73e3e;
+
+$welcome-text: #ffffff;
+$error-bg: rgba(219, 68, 68, 0.9);
+$error-text: #ffffff;
+$success-bg: rgba(0, 149, 60, 0.9);
+$success-text: #ffffff;
+
+$form-title: #ffffff;
+$brand-color: #db4444;
+
+.loginCaontainer {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: $auth-container-bg;
+
+  .loginFrame {
+    background: $auth-form-bg;
+    border-radius: 1rem;
+    padding: 3rem;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    h1 {
+      color: $form-title;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    form {
+      .inpt {
+        width: 100%;
+        background: $auth-input-bg;
+        border: 2px solid $auth-input-border;
+        border-radius: 0.5rem;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        color: $auth-input-text;
+        transition: border-color 0.3s ease;
+
+        &::placeholder {
+          color: $auth-input-placeholder;
+        }
+
+        &:focus {
+          outline: none;
+          border-color: $auth-input-focus;
+        }
+
+        &.error {
+          border-color: $delete-btn-bg;
+        }
+      }
+    }
+
+    .submitBtn {
+      margin-bottom: 1rem;
+
+      button {
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        background: $login-btn-bg;
+        color: $login-btn-text;
+
+        &:hover {
+          background: $login-btn-hover;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+    }
+
+    .auth-link {
+      color: $welcome-text;
+      margin-top: 1.5rem;
+
+      a {
+        color: $brand-color;
+        text-decoration: none;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+.errorMsgContainer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  backdrop-filter: blur(5px);
+  background: $error-bg;
+
+  &.show {
+    display: flex;
+  }
+
+  .xicon {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: $error-text;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 1001;
+  }
+
+  .errorMsg {
+    text-align: center;
+    padding: 2rem;
+
+    h1 {
+      color: $error-text;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .loginCaontainer {
+    .loginFrame {
+      padding: 2rem;
+
+      h1 {
+        font-size: 1.75rem;
+      }
+    }
+  }
+
+  .errorMsgContainer {
+    .errorMsg {
+      padding: 1.5rem;
+
+      h1 {
+        font-size: 1.1rem;
+      }
+    }
+  }
+}
