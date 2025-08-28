@@ -1,1 +1,51 @@
-<p>product-modal works!</p>
+<div class="popBuyWindow firstOne">
+  <i class="fa-solid fa-x xicon" (click)="close()"></i>
+  
+  <div class="imgContainer">
+    <img [src]="product.image" [alt]="product.title">
+  </div>
+  
+  <div class="stars">
+    <i 
+      *ngFor="let filled of [].constructor(5); let i = index"
+      class="fa-solid fa-star"
+      [ngClass]="{'text-warning': i < product.rating, 'text-secondary': i >= product.rating}">
+    </i>
+    <p class="ratingNumber">({{ product.reviews }})</p>
+  </div>
+  
+  <div class="titleOfImg">
+    <h3>{{ product.title }}</h3>
+    <p>{{ product.description }}</p>
+    <div class="prices">
+      <h3 class="price" style="color: #d46b6b;">${{ product.price }}</h3>
+      <h3 class="discount" style="color: #d46b6b;" *ngIf="product.discountPrice">
+        ${{ product.discountPrice }}
+      </h3>
+    </div>
+    
+    <div class="allRangeBox">
+      <div class="RangeSlider">
+        <input type="range" 
+               [min]="1" 
+               [max]="product.stock" 
+               step="1" 
+               [(ngModel)]="quantity" 
+               class="rangeInpt1">
+      </div>
+      <div class="value1 value">{{ quantity }}</div>
+    </div>
+    
+    <div class="correct" style="display: none;">
+      <h1>✅ Added successfully</h1>
+    </div>
+  </div>
+  
+  <div class="buttonsToBuy popbtn">
+    <button (click)="close()">Close</button>
+  </div>
+  
+  <div class="buttonsToBuy popbtn">
+    <button class="addToCart1" (click)="addToCart()">Add to cart 🛒</button>
+  </div>
+</div>
