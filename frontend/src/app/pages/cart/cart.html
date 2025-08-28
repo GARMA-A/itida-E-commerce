@@ -1,1 +1,43 @@
-<p>cart works!</p>
+<div class="cart-container">
+  <h1>Shopping Cart</h1>
+
+  <div *ngIf="isLoading" class="loading">Loading cart...</div>
+
+  <div *ngIf="!isLoading && isEmpty" class="empty-cart">
+    <h2>Your cart is empty</h2>
+    <p>Looks like you haven't added any items to your cart yet.</p>
+    <button class="continue-shopping" (click)="continueShopping()">Continue Shopping</button>
+  </div>
+
+  <div *ngIf="!isLoading && !isEmpty">
+    <div class="titles product">
+      <h2 class="image">Product</h2>
+      <h2 class="price">Price</h2>
+      <h2 class="quantity">Quantity</h2>
+      <h2 class="subTotal">Subtotal</h2>
+      <h2 class="action">Action</h2>
+      <h2 class="action">Action</h2>
+    </div>
+
+    <div class="cart-items">
+      <app-cart-item
+        *ngFor="let item of cartItems"
+        [item]="item"
+        (quantityIncrease)="increaseQuantity($event)"
+        (quantityDecrease)="decreaseQuantity($event)"
+        (remove)="removeItem($event)"
+      >
+      </app-cart-item>
+    </div>
+
+    <div class="cart-summary">
+      <div class="total-amount">Total: ${{ cartSummary.total | number : '1.2-2' }}</div>
+      <div class="tax-info">Includes tax: ${{ cartSummary.tax | number : '1.2-2' }}</div>
+    </div>
+
+    <div class="buyNow">
+      <button id="confirm" (click)="confirmOrder()">Confirm Order</button>
+      <button id="deleteAll" (click)="deleteAllItems()">Delete All</button>
+    </div>
+  </div>
+</div>

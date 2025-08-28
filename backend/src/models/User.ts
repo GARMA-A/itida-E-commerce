@@ -1,10 +1,8 @@
-import mongoose, { Document, Schema, Model } from "mongoose";
+import mongoose, { Document, Schema, Model, Types } from "mongoose";
 import bcrypt from "bcrypt";
 import validator from "validator";
 
-// -----------------------------
-// 1. Define Address subdocument
-// -----------------------------
+// Define Address subdocument
 interface IAddress {
   type: "billing" | "shipping" | "both";
   street: string;
@@ -27,17 +25,16 @@ const AddressSchema: Schema<IAddress> = new Schema<IAddress>({
   isDefault: { type: Boolean, default: false },
 });
 
-// -----------------------------
-// 2. Define User interface
-// -----------------------------
+// Define User interface
 export interface IUser extends Document {
+  _id: Types.ObjectId;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   phoneNumber?: string;
-  dateofBirth?: Date;
-  profilImage?: string;
+  dateOfBirth?: Date;
+  profileImage?: string;
   isActive: boolean;
   emailVerified: boolean;
   addresses?: IAddress[];
@@ -47,13 +44,20 @@ export interface IUser extends Document {
   comparePassword(candidatePassword: string): Promise<boolean>;
 }
 
-// -----------------------------
-// 3. Define User Schema
-// -----------------------------
+// Define User Schema
 const UserSchema: Schema<IUser> = new Schema<IUser>(
   {
-    firstName: { type: String, required: true, trim: true },
-    lastName: { type: String, required: true, trim: true },
+    firstName: {
+      type: String,
+      required: true,
+      trim: true,
+      index: true, // Add index for faster lookups
+    },
+    lastName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     email: {
       type: String,
       required: true,
@@ -61,10 +65,14 @@ const UserSchema: Schema<IUser> = new Schema<IUser>(
       lowercase: true,
       validate: [validator.isEmail, "Please enter a valid email"],
     },
-    password: { type: String, required: true, minlength: 7 },
+    password: {
+      type: String,
+      required: true,
+      minlength: 1, // Allow numeric-only passwords
+    },
     phoneNumber: { type: String },
-    dateofBirth: { type: Date },
-    profilImage: { type: String },
+    dateOfBirth: { type: Date },
+    profileImage: { type: String },
     isActive: { type: Boolean, default: true },
     emailVerified: { type: Boolean, default: false },
     addresses: [AddressSchema],
@@ -74,27 +82,25 @@ const UserSchema: Schema<IUser> = new Schema<IUser>(
   }
 );
 
-// -----------------------------
-// 4. Hash password before saving
-// -----------------------------
-UserSchema.pre<IUser>("save", async function(next) {
+// Hash password before saving
+UserSchema.pre<IUser>("save", async function (next) {
   if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
+
+  // Only hash if password is not already hashed (contains letters)
+  if (!/^\$2[aby]\$\d+\$/.test(this.password)) {
+    this.password = await bcrypt.hash(this.password, 10);
+  }
   next();
 });
 
-// -----------------------------
-// 5. Compare password method
-// -----------------------------
-UserSchema.methods.comparePassword = async function(
+// Compare password method
+UserSchema.methods.comparePassword = async function (
   candidatePassword: string
 ): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// -----------------------------
-// 6. Export Model
-// -----------------------------
+// Export Model
 const User: Model<IUser> =
   mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
 

@@ -1,1 +1,14 @@
-<p>cart-item works!</p>
+<div class="product">
+  <div class="product-info">
+    <img *ngIf="item.image" [src]="item.image" [alt]="item.title" class="product-image" />
+    <h2>{{ item.title }}</h2>
+  </div>
+  <h2>${{ item.price | number : '1.2-2' }}</h2>
+  <div class="quantity-controls">
+    <button (click)="decreaseQuantity()" [disabled]="item.quantity <= 1">-</button>
+    <span>{{ item.quantity }}</span>
+    <button (click)="increaseQuantity()">+</button>
+  </div>
+  <h2>${{ item.subtotal | number : '1.2-2' }}</h2>
+  <button class="remove-item" (click)="removeItem()">Remove</button>
+</div>
