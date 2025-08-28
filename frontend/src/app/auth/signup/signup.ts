@@ -6,6 +6,7 @@ import { Auth } from '../../core/services/auth';
 
 @Component({
   selector: 'app-signup',
+  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './signup.html',
   styleUrl: './signup.scss',

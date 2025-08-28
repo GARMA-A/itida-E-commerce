@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
 import { Router } from '@angular/router';
-import { delay } from 'rxjs/operators';
+import { map, tap, catchError } from 'rxjs/operators';
 import { User } from '../models/user';
 
 export interface LoginCredentials {
@@ -22,10 +23,18 @@ export interface AuthState {
   token?: string;
 }
 
+export interface ApiResponse {
+  success: boolean;
+  message?: string;
+  token?: string;
+  user?: any;
+}
+
 @Injectable({
   providedIn: 'root',
 })
 export class Auth {
+  private apiUrl = 'http://localhost:5000/api/auth';
   private authStateSubject = new BehaviorSubject<AuthState>({
     isAuthenticated: false,
     currentUser: null,
@@ -33,114 +42,156 @@ export class Auth {
 
   public authState$ = this.authStateSubject.asObservable();
 
-  constructor(private router: Router) {
+  constructor(private router: Router, private http: HttpClient) {
     this.loadAuthState();
-  }
-
-  login(credentials: LoginCredentials): Observable<boolean> {
-    const users = this.getStoredUsers();
-    const user = users.find(
-      (u) => u.firstName === credentials.firstName && u.password === credentials.password
-    );
-
-    if (user) {
-      const authState: AuthState = {
-        isAuthenticated: true,
-        currentUser: user,
-        token: this.generateToken(),
-      };
-
-      this.authStateSubject.next(authState);
-      this.saveAuthState(authState);
-      localStorage.setItem('currentUserName', user.firstName);
-
-      return of(true).pipe(delay(500));
-    } else {
-      return of(false).pipe(delay(500));
-    }
-  }
-
-  signup(userData: SignupData): Observable<boolean> {
-    if (!this.validateSignupData(userData)) {
-      return of(false).pipe(delay(500));
-    }
-
-    const users = this.getStoredUsers();
-
-    const existingUser = users.find((u) => u.firstName === userData.firstName);
-    if (existingUser) {
-      return of(false).pipe(delay(500));
-    }
-
-    const newUser: User = {
-      id: this.generateId(),
-      firstName: userData.firstName,
-      lastName: userData.lastName,
-      password: userData.password,
-      createdAt: new Date(),
-    };
-
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-
-    return of(true).pipe(delay(500));
-  }
-
-  logout() {
-    const authState: AuthState = {
-      isAuthenticated: false,
-      currentUser: null,
-    };
-
-    this.authStateSubject.next(authState);
-    localStorage.removeItem('authState');
-    localStorage.removeItem('currentUserName');
-    this.router.navigate(['/auth']);
-  }
-
-  deleteAccount(): Observable<boolean> {
-    const currentState = this.authStateSubject.value;
-    if (currentState.currentUser) {
-      const users = this.getStoredUsers();
-      const updatedUsers = users.filter((u) => u.id !== currentState.currentUser!.id);
-      localStorage.setItem('users', JSON.stringify(updatedUsers));
-
-      this.logout();
-      return of(true).pipe(delay(500));
-    } else {
-      return of(false).pipe(delay(500));
-    }
-  }
-
-  private validateSignupData(data: SignupData): boolean {
-    if (!data.firstName.trim() || !data.lastName.trim()) return false;
-    if (!/^\d+$/.test(data.password)) return false;
-    if (data.password !== data.confirmPassword) return false;
-    return true;
-  }
-
-  private getStoredUsers(): User[] {
-    const users = localStorage.getItem('users');
-    return users ? JSON.parse(users) : [];
-  }
-
-  private generateToken(): string {
-    return 'token_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-  }
-
-  private generateId(): string {
-    return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
   }
 
   private loadAuthState() {
     const authState = localStorage.getItem('authState');
     if (authState) {
-      const state = JSON.parse(authState);
-      this.authStateSubject.next(state);
+      try {
+        const state = JSON.parse(authState);
+
+        if (state.token) {
+          this.verifyToken(state.token).subscribe((isValid) => {
+            if (!isValid) {
+              this.clearAuthState();
+            }
+          });
+        } else {
+          this.clearAuthState();
+        }
+      } catch (error) {
+        this.clearAuthState();
+        console.error('Error parsing auth state from localStorage:', error);
+      }
     }
+  }
+
+  private clearAuthState() {
+    localStorage.removeItem('authState');
+    localStorage.removeItem('currentUserName');
+    this.authStateSubject.next({
+      isAuthenticated: false,
+      currentUser: null,
+    });
   }
 
   private saveAuthState(state: AuthState) {
     localStorage.setItem('authState', JSON.stringify(state));
+    if (state.currentUser) {
+      localStorage.setItem('currentUserName', state.currentUser.firstName);
+    }
+  }
+
+  private verifyToken(token: string): Observable<boolean> {
+    return this.http.post<ApiResponse>(`${this.apiUrl}/verify`, { token }).pipe(
+      map((response) => response.success),
+      catchError(() => of(false))
+    );
+  }
+
+  login(credentials: LoginCredentials): Observable<boolean> {
+    return this.http.post<ApiResponse>(`${this.apiUrl}/login`, credentials).pipe(
+      tap((response) => {
+        if (response.success && response.token && response.user) {
+          const authState: AuthState = {
+            isAuthenticated: true,
+            currentUser: {
+              id: response.user.id,
+              firstName: response.user.firstName,
+              lastName: response.user.lastName,
+              password: '',
+              createdAt: new Date(response.user.createdAt || Date.now()),
+            },
+            token: response.token,
+          };
+
+          this.authStateSubject.next(authState);
+          this.saveAuthState(authState);
+        }
+      }),
+      map((response) => response.success),
+      catchError((error) => {
+        console.error('Login error:', error);
+        return of(false);
+      })
+    );
+  }
+
+  signup(userData: SignupData): Observable<boolean> {
+    const { confirmPassword, ...signupData } = userData;
+
+    return this.http.post<ApiResponse>(`${this.apiUrl}/signup`, signupData).pipe(
+      tap((response) => {
+        if (response.success && response.token && response.user) {
+          const authState: AuthState = {
+            isAuthenticated: true,
+            currentUser: {
+              id: response.user.id,
+              firstName: response.user.firstName,
+              lastName: response.user.lastName,
+              password: '',
+              createdAt: new Date(response.user.createdAt || Date.now()),
+            },
+            token: response.token,
+          };
+
+          this.authStateSubject.next(authState);
+          this.saveAuthState(authState);
+        }
+      }),
+      map((response) => response.success),
+      catchError((error) => {
+        console.error('Signup error:', error);
+        return of(false);
+      })
+    );
+  }
+
+  logout() {
+    this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
+      error: (error) => console.error('Logout API error:', error),
+    });
+
+    this.clearAuthState();
+    this.router.navigate(['/auth']);
+  }
+
+  deleteAccount(): Observable<boolean> {
+    const currentState = this.authStateSubject.value;
+    if (!currentState.currentUser || !currentState.token) {
+      return of(false);
+    }
+
+    return this.http
+      .delete<ApiResponse>(`${this.apiUrl}/users/${currentState.currentUser.id}`, {
+        headers: { Authorization: `Bearer ${currentState.token}` },
+      })
+      .pipe(
+        tap((response) => {
+          if (response.success) {
+            this.clearAuthState();
+          }
+        }),
+        map((response) => response.success),
+        catchError((error) => {
+          console.error('Delete account error:', error);
+          return of(false);
+        })
+      );
+  }
+
+  getCurrentAuthState(): AuthState {
+    return this.authStateSubject.value;
+  }
+
+  getToken(): string | null {
+    const state = this.authStateSubject.value;
+    return state.token || null;
+  }
+
+  isAuthenticated(): boolean {
+    return this.authStateSubject.value.isAuthenticated;
   }
 }

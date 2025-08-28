@@ -62,7 +62,7 @@ export class CartService {
     if (cartData) {
       try {
         const items = JSON.parse(cartData);
-        // Ensure we have proper cart items with all required fields
+
         const cartItems = items.map((item: any) => ({
           id: item.id || Date.now() + Math.random(),
           title: item.title || 'Unknown Product',
