@@ -52,7 +52,7 @@ export const deleteSeller = async (req: Request, res: Response) => {
 
 export const verifyDocuments = async (req: Request, res: Response) => {
   try {
-    const { status, reason } = req.body;
+    const { status } = req.body;
     const seller = await Seller.findById(req.params.id);
 
     if (!seller) return res.status(404).json({ error: "Seller not found" });

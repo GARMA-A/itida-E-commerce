@@ -1,5 +1,6 @@
 import mongoose, { Schema } from "mongoose";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
+import validator from "validator";
 
 const BankAccountSchema = new Schema({
   bankName: {
@@ -88,6 +89,7 @@ const SellerSchema = new Schema(
       required: true,
       trim: true,
       lowercase: true,
+      validate: [validator.isEmail, "Please enter a valid email"],
     },
     website: {
       type: String,
@@ -132,7 +134,7 @@ const SellerSchema = new Schema(
   },
   { timestamps: true }
 );
-SellerSchema.pre("save", async function (next) {
+SellerSchema.pre("save", async function(next) {
   if (!this.isModified("bankAccountInfo")) return next();
 
   try {
