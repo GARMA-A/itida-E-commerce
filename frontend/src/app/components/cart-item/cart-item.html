@@ -1,1 +1,54 @@
-<p>cart-item works!</p>
+<div class="cart-item-card">
+  <div class="row align-items-center">
+    <div class="col-md-2">
+      <img [src]="cartItem.image" [alt]="cartItem.title" class="item-image">
+    </div>
+    
+    <div class="col-md-4">
+      <h5 class="item-title">{{ cartItem.title }}</h5>
+      <p class="item-price">${{ cartItem.price.toFixed(2) }}</p>
+      <small class="text-muted">In Stock: {{ cartItem.stock }}</small>
+    </div>
+    
+    <div class="col-md-3">
+      <div class="quantity-controls">
+        <button 
+          class="btn btn-outline-secondary btn-sm"
+          (click)="decreaseQuantity()"
+          [disabled]="cartItem.quantity <= 1">
+          <i class="fas fa-minus"></i>
+        </button>
+        
+        <input 
+          type="number"
+          class="form-control quantity-input"
+          [value]="cartItem.quantity"
+          [min]="1"
+          [max]="cartItem.stock"
+          (change)="onQuantityChange(+$event.target.value)">
+        
+        <button 
+          class="btn btn-outline-secondary btn-sm"
+          (click)="increaseQuantity()"
+          [disabled]="cartItem.quantity >= cartItem.stock">
+          <i class="fas fa-plus"></i>
+        </button>
+      </div>
+    </div>
+    
+    <div class="col-md-2">
+      <div class="item-total">
+        <strong>${{ (cartItem.price * cartItem.quantity).toFixed(2) }}</strong>
+      </div>
+    </div>
+    
+    <div class="col-md-1">
+      <button 
+        class="btn btn-outline-danger btn-sm"
+        (click)="onRemove()"
+        title="Remove item">
+        <i class="fas fa-trash"></i>
+      </button>
+    </div>
+  </div>
+</div>
