@@ -1,186 +1,152 @@
-import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import { Response, Request } from "express";
 import User from "../models/User";
-import Seller from "../models/Seller";
+import bycrypt from "bcrypt";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
-// User Registration
-export const registerUser = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const user = await User.create(req.body);
-    const token = jwt.sign({ id: user._id, type: "user" }, JWT_SECRET, { expiresIn: "7d" });
-    
-    res.status(201).json({
-      success: true,
-      user: {
-        id: user._id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        type: "user"
-      },
-      token
-    });
-  } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
-  }
+const login = async (req: Request, res: Response) => {
+	try {
+		const { email } = req.body;
+		const user = await User.findOne({ email }).exec();
+		if (!user) {
+			return res.status(400).json({ message: 'User with this email not exists' });
+		}
+
+		const accessToken = jwt.sign({
+			id: user._id
+		}, process.env.ACCESS_TOKEN_SECRET as string
+			, { expiresIn: "15m" });
+
+		const refreshToken = jwt.sign({
+			id: user._id
+		}, process.env.REFRESH_TOKEN_SECRET as string,
+			{ expiresIn: "7d" });
+
+		res.cookie('refreshToken', refreshToken, {
+			httpOnly: true,
+			maxAge: 7 * 24 * 60 * 60 * 1000,
+			sameSite: 'none',
+			secure: true,
+		});
+		res.cookie('accessToken', accessToken, {
+			httpOnly: true,
+			secure: true,
+			sameSite: 'none',
+			maxAge: 30 * 60 * 1000,
+		});
+		res.status(201).json({ message: 'User login successfully', user: user.email });
+
+
+
+	} catch (error) {
+		console.error('Error during signup:', error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
 };
 
-// User Login
-export const loginUser = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { email, password } = req.body;
 
-    // Find user and include password for comparison
-    const user = await User.findOne({ email }).select("+password");
-    if (!user || !await user.comparePassword(password)) {
-      res.status(401).json({ success: false, message: "Invalid email or password" });
-      return;
-    }
+const register = async (req: Request, res: Response) => {
+	try {
+		const { email, password } = req.body;
+		const user = await User.findOne({ email }).exec();
+		if (user) {
+			return res.status(400).json({ message: 'User with this email already exists' });
+		}
+		const hashedPassword = await bycrypt.hash(password, 10);
+		const newUser = new User({ ...req.body, password: hashedPassword });
 
-    const token = jwt.sign({ id: user._id, type: "user" }, JWT_SECRET, { expiresIn: "7d" });
-    
-    res.json({
-      success: true,
-      user: {
-        id: user._id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        type: "user"
-      },
-      token
-    });
-  } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
-  }
+		const accessToken = jwt.sign({
+			id: newUser._id
+		}, process.env.ACCESS_TOKEN_SECRET as string
+			, { expiresIn: "15m" });
+
+		const refreshToken = jwt.sign({
+			id: newUser._id
+		}, process.env.REFRESH_TOKEN_SECRET as string,
+			{ expiresIn: "7d" });
+
+		await newUser.save();
+		res.cookie('refreshToken', refreshToken, {
+			httpOnly: true,
+			maxAge: 7 * 24 * 60 * 60 * 1000,
+			sameSite: 'none',
+			secure: true,
+		});
+		res.cookie('accessToken', accessToken, {
+			httpOnly: true,
+			secure: true,
+			sameSite: 'none',
+			maxAge: 30 * 60 * 1000,
+		});
+		res.status(201).json({ message: 'User created successfully', user: newUser.email });
+
+
+
+	} catch (error) {
+		console.error('Error during signup:', error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
 };
 
-// Seller Login (using business email and creating a simplified approach)
-export const loginSeller = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const { email, password } = req.body;
 
-    // For now, we'll authenticate sellers using their business email
-    // In a real app, you might want to have separate authentication
-    const seller = await Seller.findOne({ businessEmail: email }).populate('userId');
-    
-    if (!seller || !seller.userId) {
-      res.status(401).json({ success: false, message: "Seller not found" });
-      return;
-    }
 
-    // Check password against the associated user account
-    const user = await User.findById(seller.userId).select("+password");
-    if (!user || !await user.comparePassword(password)) {
-      res.status(401).json({ success: false, message: "Invalid email or password" });
-      return;
-    }
 
-    const token = jwt.sign({ id: seller._id, type: "seller" }, JWT_SECRET, { expiresIn: "7d" });
-    
-    res.json({
-      success: true,
-      user: {
-        id: seller._id,
-        email: seller.businessEmail,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        businessName: seller.businessName,
-        type: "seller"
-      },
-      token
-    });
-  } catch (error: any) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+const refresh = async (req: Request, res: Response) => {
+	const cookies = req.cookies;
+	const refreshTokenCookie = cookies?.refreshToken;
+	if (!refreshTokenCookie) {
+		return res.status(401).json({ message: 'No refresh token found' });
+	}
 
-// Simple seller registration for demo purposes
-export const registerSeller = async (req: Request, res: Response): Promise<void> => {
-  try {
-    // First create a user account for the seller
-    const userData = {
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      email: req.body.email,
-      password: req.body.password,
-      phoneNumber: req.body.phoneNumber
-    };
-    
-    const user = await User.create(userData);
-    
-    // Then create the seller profile
-    const sellerData = {
-      ...req.body,
-      userId: user._id,
-      businessEmail: req.body.email
-    };
-    
-    const seller = await Seller.create(sellerData);
-    const token = jwt.sign({ id: seller._id, type: "seller" }, JWT_SECRET, { expiresIn: "7d" });
-    
-    res.status(201).json({
-      success: true,
-      user: {
-        id: seller._id,
-        email: seller.businessEmail,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        businessName: seller.businessName,
-        type: "seller"
-      },
-      token
-    });
-  } catch (error: any) {
-    res.status(400).json({ success: false, message: error.message });
-  }
-};
+	jwt.verify(
+		refreshTokenCookie,
+		process.env.REFRESH_TOKEN_SECRET as string,
+		(err: jwt.VerifyErrors | null, decoded: string | JwtPayload | undefined) => {
+			if (err || !decoded || typeof decoded === 'string') {
+				return res.status(403).json({ message: 'Invalid refresh token' });
+			}
 
-// Verify Token
-export const verifyToken = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) {
-      res.status(401).json({ success: false, message: "No token provided" });
-      return;
-    }
+			const payload = decoded as JwtPayload;
+			const userId = payload.id;
+			if (!userId) {
+				return res.status(403).json({ message: 'Invalid refresh token payload' });
+			}
 
-    const decoded = jwt.verify(token, JWT_SECRET) as { id: string; type: string };
-    
-    let result;
-    if (decoded.type === "seller") {
-      const seller = await Seller.findById(decoded.id).populate('userId');
-      if (!seller || !seller.userId) {
-        res.status(401).json({ success: false, message: "Invalid token" });
-        return;
-      }
-      result = {
-        id: seller._id,
-        email: seller.businessEmail,
-        firstName: seller.userId.firstName,
-        lastName: seller.userId.lastName,
-        businessName: seller.businessName,
-        type: "seller"
-      };
-    } else {
-      const user = await User.findById(decoded.id).select("-password");
-      if (!user) {
-        res.status(401).json({ success: false, message: "Invalid token" });
-        return;
-      }
-      result = {
-        id: user._id,
-        email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        type: "user"
-      };
-    }
+			const newAccessToken = jwt.sign(
+				{ id: userId },
+				process.env.ACCESS_TOKEN_SECRET as string,
+				{ expiresIn: '30m' }
+			);
 
-    res.json({ success: true, user: result });
-  } catch (error: any) {
-    res.status(401).json({ success: false, message: "Invalid token" });
-  }
-};
+			res.cookie('accessToken', newAccessToken, {
+				httpOnly: true,
+				secure: true,
+				sameSite: 'none',
+				maxAge: 30 * 60 * 1000,
+			});
+			res.status(200).json({ message: 'Access token refreshed' });
+		}
+	);
+}
+
+const logout = (req: Request, res: Response) => {
+	try {
+		(req as any).userId = undefined;
+		res.clearCookie('refreshToken', {
+			httpOnly: true,
+			sameSite: 'none',
+			secure: true,
+		});
+		res.clearCookie('accessToken', {
+			httpOnly: true,
+			sameSite: 'none',
+			secure: true,
+		});
+		res.status(200).json({ message: 'Logout successful' });
+	} catch (error) {
+		console.error('Error during logout:', error);
+		res.status(500).json({ message: 'Internal server error' });
+	}
+}
+
+export { login, register, refresh, logout };

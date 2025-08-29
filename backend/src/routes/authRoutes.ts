@@ -1,23 +1,13 @@
-import express from "express";
-import {
-  registerUser,
-  loginUser,
-  registerSeller,
-  loginSeller,
-  verifyToken,
-} from "../controllers/authController";
+import { Router } from "express";
+import { login, logout, refresh, register } from "../controllers/authController";
 
-const router = express.Router();
 
-// User routes
-router.post("/register", registerUser);
-router.post("/login", loginUser);
 
-// Seller routes
-router.post("/seller-register", registerSeller);
-router.post("/seller-login", loginSeller);
+const router = Router();
 
-// Token verification
-router.get("/verify", verifyToken);
+router.post("/register", register);
+router.post("/login", login);
+router.get("/logout", logout);
+router.get("/refresh", refresh);
 
 export default router;
