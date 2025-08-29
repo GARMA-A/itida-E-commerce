@@ -17,6 +17,7 @@ export const routes: Routes = [
   { path: 'products', component: Products },
   { path: 'cart', component: Cart },
   { path: 'auth/login', component: Login },
+  { path: 'auth/seller-login', component: Login, data: { type: 'seller' } },
   { path: 'auth/signup', component: Signup },
   { path: 'auth/manage', component: UserManagement },
   { path: 'success', component: Success },

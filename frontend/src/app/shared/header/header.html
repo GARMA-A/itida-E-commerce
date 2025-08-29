@@ -1,26 +1,63 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4">
-  <a class="navbar-brand fw-bold" routerLink="/">E-Commerce</a>
+<nav class="navbar navbar-expand-lg navbar-dark bg-gradient px-4">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold brand-text" routerLink="/">
+      <i class="fas fa-shopping-bag me-2"></i>
+      E-Commerce
+    </a>
 
-  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-  <div class="collapse navbar-collapse" id="navbarNav">
-    <ul class="navbar-nav ms-auto">
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/about" routerLinkActive="active">About</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/contact" routerLinkActive="active">Contact</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" routerLink="/cart" routerLinkActive="active">Cart</a>
-      </li>
-    </ul>
-    <a class="btn btn-warning ms-3" routerLink="/auth/login">Login</a>
-    <a class="btn btn-warning ms-3" routerLink="/auth/signup">Signup</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav mx-auto">
+        <li class="nav-item">
+          <a class="nav-link nav-link-custom" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <i class="fas fa-home me-1"></i>Home
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-link-custom" routerLink="/products" routerLinkActive="active">
+            <i class="fas fa-box me-1"></i>Products
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-link-custom" routerLink="/about" routerLinkActive="active">
+            <i class="fas fa-info-circle me-1"></i>About
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link nav-link-custom" routerLink="/contact" routerLinkActive="active">
+            <i class="fas fa-envelope me-1"></i>Contact
+          </a>
+        </li>
+      </ul>
+      
+      <div class="d-flex align-items-center">
+        <a class="nav-link cart-link me-3" routerLink="/cart" routerLinkActive="active">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-badge" *ngIf="cartItemCount > 0">{{ cartItemCount }}</span>
+          Cart
+        </a>
+        
+        <div class="dropdown me-2">
+          <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="fas fa-user me-1"></i>Login
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/auth/login">
+              <i class="fas fa-user me-2"></i>User Login
+            </a></li>
+            <li><a class="dropdown-item" routerLink="/auth/seller-login">
+              <i class="fas fa-store me-2"></i>Seller Login
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" routerLink="/auth/signup">
+              <i class="fas fa-user-plus me-2"></i>Sign Up
+            </a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
   </div>
 </nav>
