@@ -25,10 +25,8 @@ interface ServiceFeature {
 
 @Component({
   selector: 'app-about',
-
-  standalone:true ,
-  imports: [CommonModule],
   standalone: true,
+  imports: [CommonModule],
   templateUrl: './about.html',
   styleUrls: ['./about.scss']
 })
