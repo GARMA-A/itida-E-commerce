@@ -8,7 +8,6 @@ import authRoutes from "./routes/authRoutes"
 import cookieParser from "cookie-parser";
 import sellerRoutes from "./routes/sellerRoutes"
 
-
 const app = express();
 app.use(
   cors({
