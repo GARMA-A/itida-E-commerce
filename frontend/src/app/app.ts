@@ -3,6 +3,15 @@ import { ProductModal } from "./components/product-modal/product-modal";
 import { ItemsComponent } from "./components/items/items";
 import { Home } from "./pages/home/home";
 import { RouterOutlet } from '@angular/router';
+import { ContactFormComponent } from './components/contact-form/contact-form';
+import { About } from './pages/about/about';
+
+
+@Component({
+  selector: 'app-root',
+
+  imports: [RouterOutlet , ContactFormComponent , About],
+
 import { Header } from "./shared/header/header";
 import { Footer } from "./shared/footer/footer";
 

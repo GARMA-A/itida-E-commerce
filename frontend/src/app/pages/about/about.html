@@ -1,1 +1,66 @@
-<p>about works!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<!-- Our Story Section -->
+<div class="our-story">
+  <div class="story-text">
+    <h2>Our Story</h2>
+    <p>
+      We started with a passion for delivering great solutions and building a strong community. 
+      Our mission is to combine innovation, creativity, and dedication to bring the best experiences 
+      to our clients.
+    </p>
+  </div>
+  <div class="story-image">
+    <img src="imgs/our-story.jpg" alt="Our Story" />
+  </div>
+</div>
+
+
+<div class="about-page">
+
+  <!-- ========== Statistics Section ========== -->
+  <section class="statistics">
+    <div class="stat-card" *ngFor="let stat of statistics">
+      <div class="circle" [ngClass]="stat.circleClass">
+        <span class="value">{{ stat.value }}</span>
+      </div>
+      <p class="label">{{ stat.label }}</p>
+    </div>
+  </section>
+
+  <!-- ========== Team Section ========== -->
+  <section class="team">
+    <h2 class="section-title">Meet Our Team</h2>
+    <div class="team-grid">
+      <div class="team-member" *ngFor="let member of teamMembers">
+        <img [src]="member.image" [alt]="member.name" class="member-img" />
+        <h3 class="member-name">{{ member.name }}</h3>
+        <p class="member-title">{{ member.title }}</p>
+        <p *ngIf="member.bio" class="member-bio">{{ member.bio }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== Services Section ========== -->
+  <section class="services">
+    <div class="service-card" *ngFor="let feature of serviceFeatures">
+      <div class="icon">
+        <i [class]="feature.iconClass"></i>
+      </div>
+      <div class="service-info">
+        <h3 class="service-title">{{ feature.title }}</h3>
+        <p class="service-desc">{{ feature.description }}</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>
