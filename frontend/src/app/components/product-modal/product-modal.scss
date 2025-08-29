@@ -1,0 +1,205 @@
+// Product Display Colors
+$product-card-bg: transparent;
+$product-title: #faf7f7;
+$product-price: #f7f6f6;
+$product-discount: rgb(174, 172, 172);
+$star-active: #FFAD33;
+$star-inactive: #8D8D8D;
+
+// Modal/Popup Colors
+$modal-bg: rgba(0, 0, 0, 0.3);
+$modal-content-bg: #f2f6ff;
+$modal-text: #000000;
+$close-btn: #ffffff;
+
+// Range Slider Colors
+$slider-track: #ddd;
+$slider-thumb: #DB4444;
+$slider-value: #ffffff;
+
+// Add to Cart Button
+$cart-btn-bg: #DB4444;
+$cart-btn-text: #ffffff;
+$cart-btn-hover: #c73e3e;
+
+// Success Message
+$success-bg: rgba(0, 149, 60, 0.9);
+$success-text: #ffffff;
+
+// ====== Modal Container ======
+
+.popBuyWindow {
+  background-image:linear-gradient(to right, black, rgb(3, 3, 28), rgb(3, 3, 28), black);
+  color: $modal-text;
+  width: 500px;
+  max-width: 90%;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+  position: relative;
+  font-family: Arial, sans-serif;
+  max-height: fit-content;
+
+  .xicon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    color: $close-btn;
+    background: $cart-btn-bg;
+    border-radius: 30%;
+    font-size: 1rem;
+    padding: 4px;
+    cursor: pointer;
+    transition: 0.3s;
+    
+
+    &:hover {
+      background: $cart-btn-hover;
+    }
+  }
+
+  .imgContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+
+    img {
+      max-width: 100%;
+      max-height:300px ;
+      border-radius: 8px;
+      object-fit: fill;
+    }
+  }
+
+  .stars {
+    display: flex;
+    align-items: center;
+    margin: 0.5rem 0;
+    i {
+      margin-right: 4px;
+      font-size: 1.1rem;
+
+      &.text-warning {
+        color: $star-active;
+      }
+
+      &.text-secondary {
+        color: $star-inactive;
+      }
+    }
+
+    .ratingNumber {
+      margin-left: 6px;
+      font-size: 0.9rem;
+      color: $product-title;
+    }
+  }
+
+  .titleOfImg {
+    h3 {
+      font-size: 1.3rem;
+      color: $product-title;
+      margin-bottom: 0.3rem;
+    }
+
+    p {
+      font-size: 0.95rem;
+      margin-bottom: 0.8rem;
+      color: $product-title;
+    }
+
+    .prices {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+
+      .price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: $product-price;
+      }
+
+      .discount {
+        font-size: 1rem;
+        text-decoration: line-through;
+        color: $product-discount;
+      }
+    }
+
+    .allRangeBox {
+      margin-top: 1rem;
+
+      .RangeSlider input[type="range"] {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 6px;
+        background: $slider-track;
+        border-radius: 3px;
+        outline: none;
+        margin-bottom: 0.5rem;
+
+        &::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: $slider-thumb;
+          cursor: pointer;
+        }
+
+        &::-moz-range-thumb {
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: $slider-thumb;
+          cursor: pointer;
+        }
+      }
+
+      .value1 {
+        background: $slider-thumb;
+        color: $slider-value;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-size: 0.9rem;
+        display: inline-block;
+      }
+    }
+
+    .correct {
+      margin-top: 1rem;
+      background: $success-bg;
+      color: $success-text;
+      text-align: center;
+      padding: 0.5rem;
+      border-radius: 6px;
+
+      h1 {
+        font-size: 1.1rem;
+        margin: 0;
+      }
+    }
+  }
+
+  .buttonsToBuy {
+    display: flex;
+    justify-content: center;
+    margin-top: 1.5rem;
+
+    button {
+      background: $cart-btn-bg;
+      color: $cart-btn-text;
+      padding: 0.7rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+
+      &:hover {
+        background: $cart-btn-hover;
+      }
+    }
+  }
+}

@@ -1,19 +1,23 @@
 import { Component, signal } from '@angular/core';
+import { ProductModal } from "./components/product-modal/product-modal";
+import { ItemsComponent } from "./components/items/items";
+import { Home } from "./pages/home/home";
 import { RouterOutlet } from '@angular/router';
 import { ContactFormComponent } from './components/contact-form/contact-form';
-<<<<<<< HEAD
 import { About } from './pages/about/about';
-=======
->>>>>>> 80b4921589b3d15ff3ea9dc72a3f8607b86d8489
 
 
 @Component({
   selector: 'app-root',
-<<<<<<< HEAD
+
   imports: [RouterOutlet , ContactFormComponent , About],
-=======
-  imports: [RouterOutlet , ContactFormComponent],
->>>>>>> 80b4921589b3d15ff3ea9dc72a3f8607b86d8489
+
+import { Header } from "./shared/header/header";
+import { Footer } from "./shared/footer/footer";
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet, Header, Footer],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
