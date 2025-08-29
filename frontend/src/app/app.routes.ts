@@ -9,6 +9,7 @@ import { Signup } from './auth/signup/signup';
 import { UserManagement } from './auth/user-management/user-management';
 import { Success } from './pages/success/success';
 import { ErrorPage } from './pages/error-page/error-page';
+import { ApiTestComponent } from './components/api-test/api-test.component';
 
 export const routes: Routes = [
   { path: '', component: Home },
@@ -21,5 +22,6 @@ export const routes: Routes = [
   { path: 'auth/manage', component: UserManagement },
   { path: 'success', component: Success },
   { path: 'error', component: ErrorPage },
+  { path: 'api-test', component: ApiTestComponent },
   { path: '**', component: ErrorPage }
 ];
