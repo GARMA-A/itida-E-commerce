@@ -1,60 +1,91 @@
+<!-- Filters -->
+<div class="filters mb-4 flex gap-4 items-center">
+  <!-- Search -->
+  <input
+    type="text"
+    placeholder="Search products..."
+    [(ngModel)]="searchTerm"
+    class="border p-2 rounded w-1/2"
+  />
+  <!-- Category Filter -->
+  <select [(ngModel)]="selectedCategory" class="border p-2 rounded">
+    <option value="all">All</option>
+    <option value="tech">Tech</option>
+    <option value="gaming">Gaming</option>
+    <option value="electronics">Electronics</option>
+    <option value="furniture">Furniture</option>
+    <option value="accessories">Accessories</option>
+  </select>
+  <!-- Reset Button -->
+  <button (click)="resetFilters()" class="bg-gray-200 px-3 py-2 rounded">
+    Reset
+  </button>
+</div>
 
-  <!-- Filters -->
-  <div class="filters mb-4 flex gap-4 items-center">
-    <!-- Search -->
-    <input
-      type="text"
-      placeholder="Search products..."
-      [(ngModel)]="searchTerm"
-      class="border p-2 rounded w-1/2"
-    />
-    <!-- Category Filter -->
-    <select [(ngModel)]="selectedCategory" class="border p-2 rounded">
-      <option value="all">All</option>
-      <option value="gaming">Gaming</option>
-      <option value="electronics">Electronics</option>
-      <option value="furniture">Furniture</option>
-      <option value="accessories">Accessories</option>
-    </select>
-    <!-- Reset Button -->
-    <button (click)="resetFilters()" class="bg-gray-200 px-3 py-2 rounded">
-      Reset
+<!-- Loading State -->
+@if (isLoading) {
+  <div class="text-center text-gray-500 mt-6">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto"></div>
+    <p class="mt-4">Loading products...</p>
+  </div>
+}
+
+<!-- Error State -->
+@if (error && !isLoading) {
+  <div class="text-center text-red-500 mt-6">
+    <p>{{ error }}</p>
+    <button 
+      (click)="retryLoadProducts()" 
+      class="mt-2 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+      Retry
     </button>
   </div>
+}
+
+<!-- Products -->
+@if (!isLoading && !error) {
   <div class="items">
-  <div 
-    class="item f4i"
-    *ngFor="let product of filteredProducts()"
-    (click)="openProductModal(product)"
-  >
-    <div class="box">
-      <img [src]="product.image" [alt]="product.title">
-    </div>
-    <div class="discription">
-      <h3 class="title">{{ product.title }}</h3>
-      <div class="prices">
-        <h3 class="price">${{ product.price }}</h3>
-        <h3 class="discount" *ngIf="product.discountPrice">${{ product.discountPrice }}</h3>
+    @for (product of filteredProducts(); track product.id) {
+      <div 
+        class="item f4i"
+        (click)="openProductModal(product)"
+      >
+        <div class="box">
+          <img [src]="product.image" [alt]="product.title" />
+        </div>
+        <div class="discription">
+          <h3 class="title">{{ product.title }}</h3>
+          <div class="prices">
+            <h3 class="price">${{ product.price }}</h3>
+            @if (product.discountPrice) {
+              <h3 class="discount">${{ product.discountPrice }}</h3>
+            }
+          </div>
+          <div class="stars">
+            @for (star of [].constructor(5); track $index) {
+              <i 
+                class="fa-solid fa-star"
+                [ngClass]="{'text-warning': $index < product.rating!, 'text-secondary': $index >= product.rating!}">
+              </i>
+            }
+            <p class="ratingNumber">({{ product.reviews }})</p>
+          </div>
+        </div>
       </div>
-      <div class="stars">
-        <i 
-          *ngFor="let filled of [].constructor(5); let i = index"
-          class="fa-solid fa-star"
-          [ngClass]="{'text-warning': i < product.rating, 'text-secondary': i >= product.rating}">
-        </i>
-        <p class="ratingNumber">({{ product.reviews }})</p>
+    }
+    
+    <!-- لو مفيش نتائج -->
+    @if (filteredProducts().length === 0) {
+      <div class="text-center text-gray-500 mt-6">
+        لا يوجد منتجات مطابقة للبحث
       </div>
-    </div>
+    }
   </div>
+}
 
-  <!-- لو مفيش نتائج -->
-  <div *ngIf="filteredProducts().length === 0" class="text-center text-gray-500 mt-6">
-    لا يوجد منتجات مطابقة للبحث
-  </div>
-
-  <!-- Modal -->
+<!-- Modal -->
+@if (showModal) {
   <div 
-    *ngIf="showModal" 
     style="background-color: rgba(0, 0, 0, 0.5); 
            position: fixed; 
            top: 0; left: 0; 
@@ -68,4 +99,4 @@
       [close]="closeModal.bind(this)">
     </app-product-modal>
   </div>
-</div>
+}

@@ -7,7 +7,7 @@ import { Cart } from '../../core/services/cart';
 
 @Component({
   selector: 'app-product-modal',
-  imports: [CommonModule,FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './product-modal.html',
   styleUrl: './product-modal.scss'
 })
@@ -17,17 +17,17 @@ export class ProductModal {
   @Input() close!: () => void;
   @Output() addToCartEvent = new EventEmitter<{ product: Product, quantity: number }>();
 
-  constructor(private cartService: Cart) {}
+  constructor(private cartService: Cart) { }
 
   addToCart() {
     if (!this.product) return;
-    
+
     // Add to cart service
     this.cartService.addToCart(this.product, this.quantity);
-    
+
     // Emit event for parent component
     this.addToCartEvent.emit({ product: this.product, quantity: this.quantity });
-    
+
     // Show success message
     const successMsg = document.querySelector(".correct") as HTMLElement;
     if (successMsg) {

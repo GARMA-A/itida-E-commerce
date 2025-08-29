@@ -2,15 +2,16 @@
   <i class="fa-solid fa-x xicon" (click)="close()"></i>
   
   <div class="imgContainer">
-    <img [src]="product.image" [alt]="product.title">
+    <img [src]="product.image" [alt]="product.title" [width]="200" [height]="200">
   </div>
   
   <div class="stars">
-    <i 
-      *ngFor="let filled of [].constructor(5); let i = index"
-      class="fa-solid fa-star"
-      [ngClass]="{'text-warning': i < product.rating, 'text-secondary': i >= product.rating}">
-    </i>
+    @for (star of [].constructor(5); track $index) {
+      <i 
+        class="fa-solid fa-star"
+        [ngClass]="{'text-warning': $index < product.rating!, 'text-secondary': $index >= product.rating!}">
+      </i>
+    }
     <p class="ratingNumber">({{ product.reviews }})</p>
   </div>
   
@@ -19,9 +20,11 @@
     <p>{{ product.description }}</p>
     <div class="prices">
       <h3 class="price" style="color: #d46b6b;">${{ product.price }}</h3>
-      <h3 class="discount" style="color: #d46b6b;" *ngIf="product.discountPrice">
-        ${{ product.discountPrice }}
-      </h3>
+      @if (product.discountPrice) {
+        <h3 class="discount" style="color: #d46b6b;">
+          ${{ product.discountPrice }}
+        </h3>
+      }
     </div>
     
     <div class="allRangeBox">
@@ -44,7 +47,7 @@
   <div class="buttonsToBuy popbtn">
     <button (click)="close()">Close</button>
   </div>
-  
+
   <div class="buttonsToBuy popbtn">
     <button class="addToCart1" (click)="addToCart()">Add to cart 🛒</button>
   </div>
