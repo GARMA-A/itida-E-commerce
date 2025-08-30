@@ -5,12 +5,14 @@ import {
   updateCart,
   clearCart,
 } from "../controllers/cartController";
+import isAuthenticated from "../middlewares/auth/jwt";
 
 const router = Router();
 
-router.get("/:userId", getCart);
+router.use("/", isAuthenticated);
+router.get("/", getCart);
 router.post("/", addToCart);
-router.put("/:id", updateCart);
-router.delete("/:userId", clearCart);
+router.put("/", updateCart);
+router.delete("/", clearCart);
 
 export default router;

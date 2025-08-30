@@ -3,7 +3,7 @@ import Order from "../models/Order";
 
 export const createOrder = async (req: Request, res: Response) => {
   try {
-    const order = new Order(req.body);
+    const order = new Order({ userId: req.userId, ...req.body });
     await order.save();
     res.status(201).json(order);
   } catch (err: any) {
@@ -13,7 +13,7 @@ export const createOrder = async (req: Request, res: Response) => {
 
 export const getOrder = async (req: Request, res: Response) => {
   try {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.userId);
     if (!order) return res.status(404).json({ error: "Order not found" });
     res.json(order);
   } catch (err: any) {
@@ -23,7 +23,7 @@ export const getOrder = async (req: Request, res: Response) => {
 
 export const updateOrder = async (req: Request, res: Response) => {
   try {
-    const order = await Order.findByIdAndUpdate(req.params.id, req.body, {
+    const order = await Order.findByIdAndUpdate(req.userId, req.body, {
       new: true,
     });
     if (!order) return res.status(404).json({ error: "Order not found" });
@@ -35,7 +35,7 @@ export const updateOrder = async (req: Request, res: Response) => {
 
 export const getUserOrders = async (req: Request, res: Response) => {
   try {
-    const orders = await Order.find({ userId: req.params.userId });
+    const orders = await Order.find({ userId: req.userId });
     res.json(orders);
   } catch (err: any) {
     res.status(500).json({ error: err.message });

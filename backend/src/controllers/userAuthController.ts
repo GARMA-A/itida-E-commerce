@@ -13,12 +13,14 @@ const login = async (req: Request, res: Response) => {
 		}
 
 		const accessToken = jwt.sign({
-			id: user._id
+			id: user._id,
+			role: "user"
 		}, process.env.ACCESS_TOKEN_SECRET as string
 			, { expiresIn: "15m" });
 
 		const refreshToken = jwt.sign({
-			id: user._id
+			id: user._id,
+			role: "user"
 		}, process.env.REFRESH_TOKEN_SECRET as string,
 			{ expiresIn: "7d" });
 
@@ -56,12 +58,14 @@ const register = async (req: Request, res: Response) => {
 		const newUser = new User({ ...req.body, password: hashedPassword });
 
 		const accessToken = jwt.sign({
-			id: newUser._id
+			id: newUser._id,
+			role: "user"
 		}, process.env.ACCESS_TOKEN_SECRET as string
 			, { expiresIn: "15m" });
 
 		const refreshToken = jwt.sign({
-			id: newUser._id
+			id: newUser._id,
+			role: "user"
 		}, process.env.REFRESH_TOKEN_SECRET as string,
 			{ expiresIn: "7d" });
 
@@ -113,7 +117,7 @@ const refresh = async (req: Request, res: Response) => {
 			}
 
 			const newAccessToken = jwt.sign(
-				{ id: userId },
+				{ id: userId, role: "user" },
 				process.env.ACCESS_TOKEN_SECRET as string,
 				{ expiresIn: '30m' }
 			);

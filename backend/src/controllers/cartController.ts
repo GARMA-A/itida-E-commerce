@@ -3,7 +3,7 @@ import Cart from "../models/Cart";
 
 export const getCart = async (req: Request, res: Response) => {
   try {
-    const cart = await Cart.findOne({ userId: req.params.userId });
+    const cart = await Cart.findOne({ userId: req.userId });
     if (!cart) return res.status(404).json({ error: "Cart not found" });
     res.json(cart);
   } catch (err: any) {
@@ -13,11 +13,11 @@ export const getCart = async (req: Request, res: Response) => {
 
 export const addToCart = async (req: Request, res: Response) => {
   try {
-    const { userId, productId, quantity, price } = req.body;
+    const { productId, quantity, price } = req.body;
 
-    let cart = await Cart.findOne({ userId });
+    let cart = await Cart.findOne({ userId: req.userId });
     if (!cart) {
-      cart = new Cart({ userId, items: [] });
+      cart = new Cart({ userId: req.userId, items: [] });
     }
     const existingItem = cart.items.find(
       (item) => item.productId.toString() === productId
@@ -38,7 +38,7 @@ export const addToCart = async (req: Request, res: Response) => {
 
 export const updateCart = async (req: Request, res: Response) => {
   try {
-    const cart = await Cart.findByIdAndUpdate(req.params.id, req.body, {
+    const cart = await Cart.findByIdAndUpdate(req.userId, req.body, {
       new: true,
     });
     if (!cart) return res.status(404).json({ error: "Cart not found" });
@@ -51,7 +51,7 @@ export const updateCart = async (req: Request, res: Response) => {
 export const clearCart = async (req: Request, res: Response) => {
   try {
     const cart = await Cart.findOneAndUpdate(
-      { userId: req.params.userId },
+      { userId: req.userId },
       { items: [] },
       { new: true }
     );
