@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { Product } from '../../interfaces/product.model';
 import { FormsModule } from '@angular/forms';
 import { Cart } from '../../core/services/cart';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-modal',
@@ -17,13 +18,24 @@ export class ProductModal {
   @Input() close!: () => void;
   @Output() addToCartEvent = new EventEmitter<{ product: Product, quantity: number }>();
 
-  constructor(private cartService: Cart) { }
+  constructor(
+    private cartService: Cart,
+    private router: Router
+  ) { }
 
   addToCart() {
     if (!this.product) return;
 
-    // Add to cart service
-    this.cartService.addToCart(this.product, this.quantity);
+    // Try to add to cart service
+    const result = this.cartService.addToCart(this.product, this.quantity);
+
+    if (!result.success) {
+      // Show login required message and redirect to login
+      alert(result.message);
+      this.router.navigate(['/auth/login']);
+      this.close();
+      return;
+    }
 
     // Emit event for parent component
     this.addToCartEvent.emit({ product: this.product, quantity: this.quantity });

@@ -104,6 +104,8 @@
   color: #fff;
   font-weight: 500;
   transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
 
   &:hover,
   &:focus {
@@ -112,19 +114,27 @@
     color: #fff;
     box-shadow: none;
   }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 255, 0.25);
+  }
 }
 
 .dropdown-menu {
-  display: flex;
   border: none;
   border-radius: 10px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   margin-top: 0.5rem;
+  background-color: #fff;
 }
 
 .dropdown-item {
   padding: 0.7rem 1.2rem;
   transition: all 0.3s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
 
   &:hover {
     background-color: #f8f9fa;
@@ -133,6 +143,10 @@
 
   i {
     color: #667eea;
+  }
+
+  &.text-danger i {
+    color: #dc3545;
   }
 }
 

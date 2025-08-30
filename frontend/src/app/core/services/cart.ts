@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { CartItem } from '../models/cart-item';
 import { Product } from '../../interfaces/product.model';
+import { AuthService } from './auth';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,7 @@ export class Cart {
   
   cartItems$ = this.cartItemsSubject.asObservable();
 
-  constructor() {
+  constructor(private authService: AuthService) {
     // Load cart from localStorage if available
     const savedCart = localStorage.getItem('cart');
     if (savedCart) {
@@ -21,7 +22,15 @@ export class Cart {
     }
   }
 
-  addToCart(product: Product, quantity: number = 1): void {
+  addToCart(product: Product, quantity: number = 1): { success: boolean, message?: string } {
+    // Check if user is authenticated
+    if (!this.authService.isLoggedIn()) {
+      return { 
+        success: false, 
+        message: 'Please log in to add items to your cart' 
+      };
+    }
+
     const existingItemIndex = this.cartItems.findIndex(item => item.productId === product.id);
     
     if (existingItemIndex >= 0) {
@@ -43,6 +52,7 @@ export class Cart {
     
     this.saveCart();
     this.cartItemsSubject.next(this.cartItems);
+    return { success: true };
   }
 
   removeFromCart(productId: number): void {

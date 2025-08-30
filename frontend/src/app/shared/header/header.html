@@ -40,9 +40,30 @@
           Cart
         </a>
         
-        <div class="dropdown me-2">
+        <!-- Authenticated User Menu -->
+        <div class="dropdown me-2" *ngIf="isLoggedIn">
           <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            <i class="fas fa-user me-1"></i>Login
+            <i class="fas fa-user me-1"></i>
+            {{ currentUser?.firstName || 'Account' }}
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/profile">
+              <i class="fas fa-user me-2"></i>Profile
+            </a></li>
+            <li><a class="dropdown-item" routerLink="/orders">
+              <i class="fas fa-shopping-bag me-2"></i>Orders
+            </a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><button class="dropdown-item" (click)="logout()">
+              <i class="fas fa-sign-out-alt me-2"></i>Logout
+            </button></li>
+          </ul>
+        </div>
+
+        <!-- Guest User Menu -->
+        <div class="dropdown me-2" *ngIf="!isLoggedIn">
+          <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="fas fa-user me-1"></i>Account
           </button>
           <ul class="dropdown-menu">
             <li><a class="dropdown-item" routerLink="/auth/login">
